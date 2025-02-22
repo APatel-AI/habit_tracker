@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Habit Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="error-container">
+        <h1>Oops! Something went wrong</h1>
+        <div class="error-details">
+            <p th:if="${status}" th:text="'Status: ' + ${status}"></p>
+            <p th:if="${error}" th:text="'Error: ' + ${error}"></p>
+            <p th:if="${message}" th:text="'Message: ' + ${message}"></p>
+        </div>
+        <a href="/" class="btn btn-primary">Return Home</a>
+    </div>
+</body>
+</html>
