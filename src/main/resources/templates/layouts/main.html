@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <a href="/" class="brand-logo">Habit Tracker</a>
+            <ul class="nav-menu">
+                <li><a th:href="@{/habits}">My Habits</a></li>
+                <li><a th:href="@{/habits/new}">Create Habit</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div th:replace="~{${content}}">
+                <!-- Content will be inserted here -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Habit Tracker - Track Your Progress</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create New Habit</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="form-container">
+            <h1>Create New Habit</h1>
+            
+            <form th:action="@{/habits}" method="post" th:object="${habit}" class="habit-form">
+                <div class="form-group">
+                    <label for="name">Habit Name *</label>
+                    <input type="text" 
+                           id="name" 
+                           th:field="*{name}" 
+                           class="form-control"
+                           required
+                           placeholder="Enter habit name">
+                    <span th:if="${#fields.hasErrors('name')}" 
+                          th:errors="*{name}" 
+                          class="error-message">
+                    </span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" 
+                             th:field="*{description}" 
+                             class="form-control"
+                             placeholder="Describe your habit"
+                             rows="3">
+                    </textarea>
+                    <span th:if="${#fields.hasErrors('description')}" 
+                          th:errors="*{description}" 
+                          class="error-message">
+                    </span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="frequency">Frequency *</label>
+                    <select id="frequency" 
+                            th:field="*{frequency}" 
+                            class="form-control"
+                            required>
+                        <option value="">Select frequency</option>
+                        <option value="DAILY">Daily</option>
+                        <option value="WEEKLY">Weekly</option>
+                        <option value="MONTHLY">Monthly</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('frequency')}" 
+                          th:errors="*{frequency}" 
+                          class="error-message">
+                    </span>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Habit</button>
+                    <a th:href="@{/habits}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
