@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Habits</title>
+    <title>My Habits ✨</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
     <div th:fragment="content">
         <div class="page-header">
-            <h1>My Habits</h1>
-            <a th:href="@{/habits/new}" class="btn btn-primary">Create New Habit</a>
+            <h1>📊 My Habits</h1>
+            <a th:href="@{/habits/new}" class="btn btn-primary">
+                ✨ Create New Habit
+            </a>
         </div>
         
         <div class="habits-grid" th:if="${!habits.empty}">
             <div th:each="habit : ${habits}" class="habit-card">
                 <div class="habit-card-header">
-                    <h3 th:text="${habit.name}">Habit Name</h3>
+                    <h3>
+                        <span th:switch="${habit.frequency}">
+                            <span th:case="'DAILY'">📅</span>
+                            <span th:case="'WEEKLY'">📆</span>
+                            <span th:case="'MONTHLY'">📊</span>
+                        </span>
+                        <span th:text="${habit.name}">Habit Name</span>
+                    </h3>
                     <span class="frequency-badge" th:text="${habit.frequency}">Frequency</span>
                 </div>
                 
@@ -25,12 +35,14 @@
                     </div>
                     
                     <div class="habit-actions">
-                        <a th:href="@{/habits/{id}/edit(id=${habit.id})}" class="btn btn-edit">Edit</a>
-                        <form th:action="@{/habits/{id}(id=${habit.id})}" method="post" class="delete-form">
+                        <a th:href="@{/habits/{id}/edit(id=${habit.id})}" class="btn btn-secondary">
+                            ✏️ Edit
+                        </a>
+                        <form th:action="@{/habits/{id}(id=${habit.id})}" method="post" class="delete-form" style="display: inline;">
                             <input type="hidden" name="_method" value="DELETE"/>
                             <button type="submit" class="btn btn-delete" 
                                     onclick="return confirm('Are you sure you want to delete this habit?')">
-                                Delete
+                                🗑️ Delete
                             </button>
                         </form>
                     </div>
@@ -39,9 +51,11 @@
         </div>
         
         <div class="empty-state" th:if="${habits.empty}">
-            <h2>No habits yet!</h2>
-            <p>Start tracking your habits by creating your first one.</p>
-            <a th:href="@{/habits/new}" class="btn btn-primary">Create Your First Habit</a>
+            <h2>🌱 Start Your Journey</h2>
+            <p>Create your first habit and begin tracking your progress!</p>
+            <a th:href="@{/habits/new}" class="btn btn-primary">
+                ✨ Create Your First Habit
+            </a>
         </div>
     </div>
 </body>
