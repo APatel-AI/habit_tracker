@@ -13,13 +13,22 @@ public class Habit {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String name = "";  // Initialize with empty string
 
     @Column
-    private String description;
+    private String description = "";  // Initialize with empty string
 
     @Column(nullable = false)
-    private String frequency; // DAILY, WEEKLY, MONTHLY
+    private String frequency = "DAILY";  // Set default value
+
+    @Column(name = "current_streak")
+    private Integer currentStreak = 0;
+
+    @Column(name = "best_streak")
+    private Integer bestStreak = 0;
+
+    @Column(name = "last_completed")
+    private LocalDateTime lastCompleted;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

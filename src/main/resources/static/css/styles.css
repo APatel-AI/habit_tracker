@@ -273,3 +273,28 @@ body {
     margin: 0.5rem 0;
     color: #666;
 }
+
+/* Add to your existing styles.css */
+.streak-info {
+    margin: 1rem 0;
+    display: flex;
+    gap: 1rem;
+}
+
+.streak-badge {
+    background: rgba(0, 255, 149, 0.1);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: var(--background-color);
+}
+
+.btn-success:hover {
+    background: #00cc78;
+}

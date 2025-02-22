@@ -1,62 +1,149 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>My Habits ✨</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-</head>
-<body>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body>
     <div th:fragment="content">
-        <div class="page-header">
-            <h1>📊 My Habits</h1>
-            <a th:href="@{/habits/new}" class="btn btn-primary">
-                ✨ Create New Habit
+      <div class="page-header">
+        <h1>📊 My Habits</h1>
+        <a th:href="@{/habits/new}" class="btn btn-primary">
+          ✨ Create New Habit
+        </a>
+      </div>
+
+      <div class="habits-grid" th:if="${!habits.empty}">
+        <div
+          th:each="habit : ${habits}"
+          class="habit-card"
+          th:id="'habit-' + ${habit.id}"
+        >
+          <div class="habit-card-header">
+            <h3>
+              <span th:switch="${habit.frequency}">
+                <span th:case="'DAILY'">📅</span>
+                <span th:case="'WEEKLY'">📆</span>
+                <span th:case="'MONTHLY'">📊</span>
+              </span>
+              <span th:text="${habit.name}">Habit Name</span>
+            </h3>
+            <span class="frequency-badge" th:text="${habit.frequency}"
+              >Frequency</span
+            >
+          </div>
+
+          <p
+            class="habit-description"
+            th:if="${habit.description}"
+            th:text="${habit.description}"
+          >
+            Description
+          </p>
+
+          <div class="streak-info">
+            <span class="streak-badge">
+              🔥 Current Streak: <span th:text="${habit.currentStreak}">0</span>
+            </span>
+            <span class="streak-badge">
+              🏆 Best Streak: <span th:text="${habit.bestStreak}">0</span>
+            </span>
+          </div>
+
+          <form
+            th:action="@{/habits/{id}/complete(id=${habit.id})}"
+            method="post"
+            class="complete-form"
+          >
+            <button type="submit" class="btn btn-success">✅ Complete</button>
+          </form>
+
+          <div class="habit-dates">
+            <small
+              >Created:
+              <span
+                th:text="${#temporals.format(habit.createdAt, 'dd-MM-yyyy')}"
+                >01-01-2024</span
+              ></small
+            >
+            <small th:if="${habit.lastCompleted}">
+              Last Completed:
+              <span
+                th:text="${#temporals.format(habit.lastCompleted, 'dd-MM-yyyy HH:mm')}"
+                >01-01-2024</span
+              >
+            </small>
+          </div>
+
+          <div class="habit-actions">
+            <a
+              th:href="@{/habits/{id}/edit(id=${habit.id})}"
+              class="btn btn-secondary"
+            >
+              ✏️ Edit
             </a>
+            <form
+              th:data-id="${habit.id}"
+              th:action="@{/habits/{id}(id=${habit.id})}"
+              class="delete-form"
+              method="post"
+              style="display: inline"
+            >
+              <input type="hidden" name="_method" value="DELETE" />
+              <button
+                type="button"
+                class="btn btn-delete"
+                th:onclick="confirmDelete([[${habit.id}]])"
+              >
+                🗑️ Delete
+              </button>
+            </form>
+          </div>
         </div>
-        
-        <div class="habits-grid" th:if="${!habits.empty}">
-            <div th:each="habit : ${habits}" class="habit-card">
-                <div class="habit-card-header">
-                    <h3>
-                        <span th:switch="${habit.frequency}">
-                            <span th:case="'DAILY'">📅</span>
-                            <span th:case="'WEEKLY'">📆</span>
-                            <span th:case="'MONTHLY'">📊</span>
-                        </span>
-                        <span th:text="${habit.name}">Habit Name</span>
-                    </h3>
-                    <span class="frequency-badge" th:text="${habit.frequency}">Frequency</span>
-                </div>
-                
-                <p class="habit-description" th:text="${habit.description}">Description</p>
-                
-                <div class="habit-card-footer">
-                    <div class="habit-dates">
-                        <small>Created: <span th:text="${#temporals.format(habit.createdAt, 'dd-MM-yyyy')}">01-01-2024</span></small>
-                    </div>
-                    
-                    <div class="habit-actions">
-                        <a th:href="@{/habits/{id}/edit(id=${habit.id})}" class="btn btn-secondary">
-                            ✏️ Edit
-                        </a>
-                        <form th:action="@{/habits/{id}(id=${habit.id})}" method="post" class="delete-form" style="display: inline;">
-                            <input type="hidden" name="_method" value="DELETE"/>
-                            <button type="submit" class="btn btn-delete" 
-                                    onclick="return confirm('Are you sure you want to delete this habit?')">
-                                🗑️ Delete
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="empty-state" th:if="${habits.empty}">
-            <h2>🌱 Start Your Journey</h2>
-            <p>Create your first habit and begin tracking your progress!</p>
-            <a th:href="@{/habits/new}" class="btn btn-primary">
-                ✨ Create Your First Habit
-            </a>
-        </div>
+      </div>
+
+      <div class="empty-state" th:if="${habits.empty}">
+        <h2>🌱 Start Your Journey</h2>
+        <p>Create your first habit and begin tracking your progress!</p>
+        <a th:href="@{/habits/new}" class="btn btn-primary">
+          ✨ Create Your First Habit
+        </a>
+      </div>
     </div>
-</body>
+
+    <script>
+        function confirmDelete(habitId) {
+            if (confirm('Are you sure you want to delete this habit?')) {
+                const card = document.getElementById('habit-' + habitId);
+                
+                fetch(`/habits/${habitId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the entire card from DOM
+                        if (card) {
+                            card.remove();
+                            
+                            // Check if there are any habits left
+                            const habitsGrid = document.querySelector('.habits-grid');
+                            if (habitsGrid && habitsGrid.children.length === 0) {
+                                window.location.reload();
+                            }
+                        }
+                    } else {
+                        throw new Error('Delete failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to delete habit. Please try again.');
+                });
+            }
+        }
+        </script>
+  </body>
 </html>
